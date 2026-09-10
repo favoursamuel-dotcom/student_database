@@ -44,7 +44,8 @@ def database():
         print("3. Search for student")
         print("4. Update grade")
         print("5. Delete grade")
-        print("6. Exit")
+        print("6. Calcutate statistics")
+        print("7. Exit")
         option = int(input("Enter option: "))
         print(f"You entered: {option}")
 
@@ -96,6 +97,25 @@ def database():
                     
                 if not found:
                     print("Invalid ID.")
+        elif option == 6:
+            print("Pick a letter")
+            print("A. Total Student")
+            print("B. Average score")
+            print("C. Highest score")
+            print("D. Lowest score")
+            pick = input("Pick a letter: ")
+            if pick == "A":
+                print("length of student = ", len(students))
+            elif pick == "B":
+                total = 0
+                for stu in students:
+                    total = total + stu["Score"]
+                    Average = total/len(students )
+                    print(Average)
+            elif pick == "C":
+                for s in student:
+                    print()
+            
         elif option == 7:
             break
         else:
