@@ -1,19 +1,21 @@
 def calc_grade(score):
     if score < 0 or score > 100:
-        print("invalid score")
+        return "Invalid"
     elif score >= 75:
-        return "Grade A"
+        return "A"
     elif score >= 65:
-        return "Grade B"
-    elif score >=55:
-        return "Grade C"
+        return "B"
+    elif score >= 55:
+        return "C"
     elif score >= 45:
-        return "Grade D"
+        return "D"
     else:
-        return "Grade E"
+        return "E"
+
 
 def database():
-    print("This is a student database")
+    print("=== STUDENT DATABASE ===")
+
     students = [
         {
             "Id": 1200,
@@ -37,87 +39,188 @@ def database():
             "Grade": "B",
         },
     ]
-    while True :
-        print("Pick one option: ")
-        print("1. Add student")
-        print("2. Display student")
-        print("3. Search for student")
-        print("4. Update grade")
-        print("5. Delete grade")
-        print("6. Calcutate statistics")
-        print("7. Exit")
-        option = int(input("Enter option: "))
-        print(f"You entered: {option}")
 
-        if option == 1:
-            id = int(input("Enter student id: "))
-            name = input("Enter a student name: ")
-            age = int(input("Enter a student age: "))
-            score = int(input("Enter a score: "))
-            grade = calc_grade(score)
-            student = {
-                    "Id": id,
+    while True:
+        print("\nPick one option:")
+        print("1. Add student")
+        print("2. Display students")
+        print("3. Search for student")
+        print("4. Update student score")
+        print("5. Delete student")
+        print("6. Calculate statistics")
+        print("7. Exit")
+
+        try:
+            option = int(input("Enter option: "))
+        except ValueError:
+            print("Please enter a number.")
+            continue
+
+        match option:
+
+            # ADD STUDENT
+            case 1:
+                student_id = int(input("Enter student ID: "))
+
+                # Check for duplicate ID
+                duplicate = False
+
+                for student in students:
+                    if student["Id"] == student_id:
+                        duplicate = True
+                        break
+
+                if duplicate:
+                    print("A student with this ID already exists.")
+                    continue
+
+                name = input("Enter student name: ")
+                age = int(input("Enter student age: "))
+                score = int(input("Enter student score: "))
+
+                grade = calc_grade(score)
+
+                if grade == "Invalid":
+                    print("Score must be between 0 and 100.")
+                    continue
+
+                student = {
+                    "Id": student_id,
                     "Name": name,
                     "Age": age,
                     "Score": score,
-                     "Grade": grade
-                     }
-            students.append(student)
-        elif option == 2:
-            print(students)
-        elif option == 3:
-            found = False
-            print("Enter ID to search ")
-            search_Id = int(input("id: "))
-            for stu in students:
-                if  search_Id == stu["Id"]:
-                    print(stu)
-                    found = True
-            if not found:
-                print("Invalid ID")
-        elif option == 4:
-            print("Enter ID ")
-            update_score_id = int(input("id: "))
-            new_score = int(input("Enter a new score: "))
-            for s in students:
-                if update_score_id == s["Id"]:
-                    s["Score"] = new_score
-                    s["Grade"] = calc_grade(new_score)
-                    print(students)
-        elif option == 5:
-            user_id = int(input("Enter id to delete: "))
-            found = False
-            for stud in students:
-                if user_id == stud["Id"]:
-                    students.remove(stud)
-                    print("Student deleted")
-                    print(students)
-                    found = True
-                    break
-                    
+                    "Grade": grade
+                }
+
+                students.append(student)
+                print("Student added successfully!")
+
+            # DISPLAY STUDENTS
+            case 2:
+                if not students:
+                    print("No students found.")
+                else:
+                    print("\n=== ALL STUDENTS ===")
+
+                    for student in students:
+                        print(
+                            f'ID: {student["Id"]} | '
+                            f'Name: {student["Name"]} | '
+                            f'Age: {student["Age"]} | '
+                            f'Score: {student["Score"]} | '
+                            f'Grade: {student["Grade"]}'
+                        )
+
+            # SEARCH STUDENT
+            case 3:
+                search_id = int(input("Enter student ID to search: "))
+                found = False
+
+                for student in students:
+                    if student["Id"] == search_id:
+                        print("\n=== STUDENT FOUND ===")
+                        print(student)
+                        found = True
+                        break
+
                 if not found:
-                    print("Invalid ID.")
-        elif option == 6:
-            print("Pick a letter")
-            print("A. Total Student")
-            print("B. Average score")
-            print("C. Highest score")
-            print("D. Lowest score")
-            pick = input("Pick a letter: ")
-            if pick == "A":
-                print("length of student = ", len(students))
-            elif pick == "B":
-                total = 0
-                for stu in students:
-                    total = total + stu["Score"]
-                    Average = total/len(students )
-                    print(Average)
-            elif pick == "C":
-                for s in student:
-                    print()
-            
-        elif option == 7:
-            break
-        else:
-            print("Invalid option. Please try again.")
+                    print("Invalid ID. Student not found.")
+
+            # UPDATE STUDENT SCORE
+            case 4:
+                update_id = int(input("Enter student ID: "))
+                found = False
+
+                for student in students:
+                    if student["Id"] == update_id:
+                        new_score = int(input("Enter new score: "))
+                        new_grade = calc_grade(new_score)
+
+                        if new_grade == "Invalid":
+                            print("Score must be between 0 and 100.")
+                            break
+
+                        student["Score"] = new_score
+                        student["Grade"] = new_grade
+
+                        print("Student score updated successfully!")
+                        found = True
+                        break
+
+                if not found:
+                    print("Invalid ID. Student not found.")
+
+            # DELETE STUDENT
+            case 5:
+                delete_id = int(input("Enter student ID to delete: "))
+                found = False
+
+                for student in students:
+                    if student["Id"] == delete_id:
+                        students.remove(student)
+                        print("Student deleted successfully!")
+                        found = True
+                        break
+
+                if not found:
+                    print("Invalid ID. Student not found.")
+
+            # STATISTICS
+            case 6:
+                while True:
+                    print("\n=== STATISTICS ===")
+                    print("A. Total students")
+                    print("B. Average score")
+                    print("C. Highest score")
+                    print("D. Lowest score")
+                    print("E. Back to main menu")
+
+                    pick = input("Pick a letter: ").lower()
+
+                    match pick:
+                        case "a":
+                            print(f"Total students: {len(students)}")
+
+                        case "b":
+                            if students:
+                                total = 0
+
+                                for student in students:
+                                    total += student["Score"]
+
+                                average = total / len(students)
+                                print(f"Average score: {average:.2f}")
+
+                        case "c":
+                            scores = []
+
+                            for student in students:
+                                scores.append(student["Score"])
+
+                            print(f"Highest score: {max(scores)}")
+
+                        case "d":
+                            scores = []
+
+                            for student in students:
+                                scores.append(student["Score"])
+
+                            print(f"Lowest score: {min(scores)}")
+
+                        case "e":
+                            break
+
+                        case _:
+                            print("Invalid option.")
+
+            # EXIT
+            case 7:
+                print("Goodbye!")
+                break
+
+            # DEFAULT
+            case _:
+                print("Invalid option. Please try again.")
+
+
 database()
